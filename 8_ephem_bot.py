@@ -45,18 +45,19 @@ def talk_to_me(update, context):
     print(user_text)
     update.message.reply_text(text)
     
-def planet_search(update, context):
-    words = update.message.text.split()
-    if len(words) != 2:
-        update.message.reply_text('Введите запрос в формате: /planet "имя планеты".') 
-    request, planet = words
+def get_planet_place(update, context):
+    input_message = update.message.text.split()
     try:
-        date = datetime.now().date()
-        set_planet = getattr(ephem, planet.title())
-        mars = set_planet(date)
-        update.message.reply_text(ephem.constellation(mars))
-    except AttributeError:
-        update.message.reply_text('Такой планеты нет в списке.')
+        command, planet = input_message
+    except ValueError:
+        update.message.reply_text("Вы не ввели название планеты") 
+    if not hasattr(ephem, planet):
+        update.message.reply_text("Введенная планета не найдена")
+        return
+    planet_info = getattr(ephem, planet)()
+    planet_info.compute(datetime.date.today())
+    planet_place = ephem.constellation(planet_info)
+    update.message.reply_text(planet_place)
 
 
 def main():
@@ -64,8 +65,8 @@ def main():
 
     dp = mybot.dispatcher
     dp.add_handler(CommandHandler("start", greet_user))
-    dp.add_handler(CommandHandler("planet", planet_search))
-#    dp.add_handler(MessageHandler(Filters.text, talk_to_me))
+    dp.add_handler(CommandHandler("planet", get_planet_place))
+    dp.add_handler(MessageHandler(Filters.text, talk_to_me))
 
     mybot.start_polling()
     mybot.idle()
