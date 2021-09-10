@@ -1,3 +1,5 @@
+#!/usr/bin/python
+## -*- coding: utf-8 -*-
 """
 
 Домашнее задание №1
@@ -15,12 +17,25 @@
 
 """
 
+def compare_strings(string1, string2):
+    if not(isinstance(string1,str) and isinstance(string2,str)):
+        return 0
+    elif string1 == string2:
+        return 1
+    elif string2 == "learn":
+        return 3  
+    elif len(string1) > len(string2):
+        return 2
+
 def main():
     """
     Эта функция вызывается автоматически при запуске скрипта в консоли
     В ней надо заменить pass на ваш код
     """
-    pass
+    print(compare_strings("Один", "Два"))
+    print(compare_strings("Один", "Один"))
+    print(compare_strings("Два", "два"))
+    print(compare_strings("Тридцать два", "Два"))
     
 if __name__ == "__main__":
     main()
